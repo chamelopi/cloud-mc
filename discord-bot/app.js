@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 
-import { verifyDiscordRequest } from './discord';
+import { verifyDiscordRequest } from './discord.js';
 import { InteractionResponseType, InteractionType } from 'discord-interactions';
 
 const app = express();
@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: verifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 app.post('/interactions', async (req, res) => {
-    const { type, id, data } = req.body;
+    const { type, _id, data } = req.body;
 
     // Handle verification requests
     if (type === InteractionType.PING) {
@@ -32,5 +32,5 @@ app.post('/interactions', async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log('stated on port ', PORT);
+    console.log('started on port', PORT);
 });
