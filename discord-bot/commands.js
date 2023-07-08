@@ -1,13 +1,18 @@
 import 'dotenv/config';
-import { sendDiscordRequest } from './discord';
+import { sendDiscordRequest } from './discord.js';
 
 const TEST_COMMAND = {
     name: 'test',
     description: 'basic command',
     type: 1, // chat-based slash command
 };
+const DELAYED_COMMAND = {
+    name: 'delayed',
+    description: 'sends message asynchronously',
+    type: 1,
+}
 
-const ALL_COMMANDS = [TEST_COMMAND];
+const ALL_COMMANDS = [TEST_COMMAND, DELAYED_COMMAND];
 
 async function installCommands(appId, commands) {
     const endpoint = `applications/${appId}/commands`;
