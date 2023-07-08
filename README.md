@@ -15,4 +15,5 @@ Azure Cloud based Minecraft setup :)
   - Starting a container based with a function: https://learn.microsoft.com/en-us/azure/container-instances/container-instances-tutorial-azure-function-trigger
 - **Telegram** or **Discord bot** for administration
   - telegram has a polling-based model, i.e. a bot actively runs an event loop, reacting to interactions
+    - [node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api) node.js lib
   - discord has a web hook based model (push-based), i.e. it could be run in an Azure Cloud Function itself
