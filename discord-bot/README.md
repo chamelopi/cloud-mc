@@ -16,5 +16,6 @@ npm start
 ```
 
 #### Resources used 
+- Where you manage your bots: https://discord.com/developers/applications
 - Discord bot guide: https://discord.com/developers/docs/getting-started
 - Example project: https://github.com/discord/discord-example-app

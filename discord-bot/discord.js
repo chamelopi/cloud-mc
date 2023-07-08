@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import fetch from 'node-fetch';
+import { verifyKey } from 'discord-interactions';
 
 export async function sendDiscordRequest(endpoint, options) {
     const url = 'https://discord.com/api/v10/' + endpoint;
@@ -26,13 +27,13 @@ export async function sendDiscordRequest(endpoint, options) {
 
 export function verifyDiscordRequest(clientKey) {
     return function (req, res, buf, _encoding) {
-      const signature = req.get('X-Signature-Ed25519');
-      const timestamp = req.get('X-Signature-Timestamp');
-  
-      const isValidRequest = verifyKey(buf, signature, timestamp, clientKey);
-      if (!isValidRequest) {
-        res.status(401).send('Bad request signature');
-        throw new Error('Bad request signature');
-      }
+        const signature = req.get('X-Signature-Ed25519');
+        const timestamp = req.get('X-Signature-Timestamp');
+
+        const isValidRequest = verifyKey(buf, signature, timestamp, clientKey);
+        if (!isValidRequest) {
+            res.status(401).send('Bad request signature');
+            throw new Error('Bad request signature');
+        }
     };
-  }
+}
