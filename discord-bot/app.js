@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: verifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 app.post('/interactions', async (req, res) => {
-    const { type, _id, data } = req.body;
+    const { type, _id, data, channel_id } = req.body;
 
     // Handle verification requests
     if (type === InteractionType.PING) {
@@ -20,6 +20,7 @@ app.post('/interactions', async (req, res) => {
     if (type === InteractionType.APPLICATION_COMMAND) {
         const { name } = data;
         if (name === 'test') {
+            console.log(`test command sent to channel ${channel_id} by ${req.body.member ? req.body.member.nick : 'null'}`);
             return res.send({
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
