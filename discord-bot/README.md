@@ -15,6 +15,16 @@ npm run register
 npm start
 ```
 
+This requires a `.env` file present with the following contents:
+
+```
+APP_ID=...
+DISCORD_TOKEN=...
+PUBLIC_KEY=...
+```
+
+Optionally, you can also specify a `PORT` - the default is 3000.
+
 #### Resources used 
 - Where you manage your bots: https://discord.com/developers/applications
 - Discord bot guide: https://discord.com/developers/docs/getting-started

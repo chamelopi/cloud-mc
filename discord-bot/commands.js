@@ -22,7 +22,7 @@ async function installCommands(appId, commands) {
         console.error(err);
         return;
     }
-    console.log('commands update successful!');
+    console.log('commands update successful! (it might take discord a few minutes to update)');
 }
 
 await installCommands(process.env.APP_ID, ALL_COMMANDS);

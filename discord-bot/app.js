@@ -8,10 +8,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: verifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
+// Send `msg` to `channel` after `delayMs` milliseconds
 function delayedMessage(channel, delayMs, msg) {
     setTimeout(async () => {
         try {
-            await sendDiscordRequest(`/channels/${channel}/messages`, { method: 'POST', body: { content: msg } });
+            await sendDiscordRequest(`channels/${channel}/messages`, { method: 'POST', body: { content: msg } });
         } catch(e) {
             console.error('Failed to send delayed message', e);
         }
@@ -42,7 +43,11 @@ app.post('/interactions', async (req, res) => {
         }
 
         if (name === 'delayed') {
+            // TODO: In the future we will call Azure here to start/stop the server and send a delayed message
+            // after that action completed.
             delayedMessage(channel_id, 3000, 'you will read this 3 seconds later');
+
+            // TODO: Is there a way we don't have to send a message here?
             return res.send({
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
