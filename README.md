@@ -32,3 +32,16 @@ You need to set up azure cloud shell first.
 Select the storage account, then follow these steps (with the appropriate type of storage):
 
 ![](img/howto-set-quota.png)
+
+### Creating a container in a container group
+
+[See here](https://learn.microsoft.com/en-us/answers/questions/1100112/error-creating-aci-with-powershell)
+
+```powershell
+$port1 = New-AzContainerInstancePortObject -Port 8000 -Protocol TCP  
+$port2 = New-AzContainerInstancePortObject -Port 8001 -Protocol TCP  
+$container = New-AzContainerInstanceObject -Name test-container -Image nginx -RequestCpu 1 -RequestMemoryInGb 1.5 `
+  -Port @($port1, $port2)  
+$containerGroup = New-AzContainerGroup -ResourceGroupName test-rg -Name test-cg -Location eastus `
+  -Container $container -OsType Linux -RestartPolicy "Never" -IpAddressType Public  
+```
