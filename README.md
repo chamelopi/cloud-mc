@@ -26,3 +26,9 @@ You need to set up azure cloud shell first.
 - Click the little arrow and select "Azure Cloud Shell"
 - Follow the instructions on screen & in the browser
 - Afterwards, you can return to your terminal and press Enter to re-activate the shell there
+
+### Setting a quota for a storage
+
+Select the storage account, then follow these steps (with the appropriate type of storage):
+
+![](img/howto-set-quota.png)
