@@ -33,15 +33,10 @@ Select the storage account, then follow these steps (with the appropriate type o
 
 ![](img/howto-set-quota.png)
 
-### Creating a container in a container group
+### Creating a container with a file share
 
-[See here](https://learn.microsoft.com/en-us/answers/questions/1100112/error-creating-aci-with-powershell)
-
-```powershell
-$port1 = New-AzContainerInstancePortObject -Port 8000 -Protocol TCP  
-$port2 = New-AzContainerInstancePortObject -Port 8001 -Protocol TCP  
-$container = New-AzContainerInstanceObject -Name test-container -Image nginx -RequestCpu 1 -RequestMemoryInGb 1.5 `
-  -Port @($port1, $port2)  
-$containerGroup = New-AzContainerGroup -ResourceGroupName test-rg -Name test-cg -Location eastus `
-  -Container $container -OsType Linux -RestartPolicy "Never" -IpAddressType Public  
 ```
+az container create -g MinecraftServer --name minecraft-server --image marctv/minecraft-papermc-server:latest --azure-file-volume-share-name minecraft --azure-file-volume-account-name minecraft20230716 --azure-file-volume-mount-path "/data" --restart-policy Never --cpu 1 --memory 4 --dns-name-label cloud-mc --ports 25565 --os-type Linux -e "EULA=TRUE OPS=chamelopi" --location "west europe"
+```
+
+With `az container create`, you can also use the `-f` flag to pass a docker-compose file? (I did not test this, but it seems likely)
