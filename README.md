@@ -17,3 +17,12 @@ Azure Cloud based Minecraft setup :)
   - telegram has a polling-based model, i.e. a bot actively runs an event loop, reacting to interactions
     - [node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api) node.js lib
   - discord has a web hook based model (push-based), i.e. it could be run in an Azure Cloud Function itself
+
+## Azure commands from powershell
+
+You need to set up azure cloud shell first.
+
+- Open windows terminal
+- Click the little arrow and select "Azure Cloud Shell"
+- Follow the instructions on screen & in the browser
+- Afterwards, you can return to your terminal and press Enter to re-activate the shell there
