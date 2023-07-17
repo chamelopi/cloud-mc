@@ -23,6 +23,8 @@ function delayedMessage(channel, delayMs, msg) {
 app.post('/interactions', async (req, res) => {
     const { type, _id, data, channel_id } = req.body;
 
+    console.log(`received request: ${JSON.stringify(req.body)}`);
+
     // Handle verification requests
     if (type === InteractionType.PING) {
         return res.send({ type: InteractionResponseType.PONG });
@@ -55,7 +57,7 @@ app.post('/interactions', async (req, res) => {
             });
         } else if (name === 'start' || name === 'stop') {
             // Schedule on event loop to not block response if azure takes a while
-            setTimeout(async () => await runContainerAction(name, channel), 150);
+            setTimeout(async () => await runContainerAction(name, channel_id), 15);
 
             // Reply so that the user knows that we are working on it
             return res.send({
