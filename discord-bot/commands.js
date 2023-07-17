@@ -11,8 +11,18 @@ const DELAYED_COMMAND = {
     description: 'sends message asynchronously',
     type: 1,
 }
+const START_SERVER = {
+    name: 'start',
+    description: 'starts the server',
+    type: 1,
+}
+const STOP_SERVER = {
+    name: 'stop',
+    description: 'stops the server',
+    type: 1,
+}
 
-const ALL_COMMANDS = [TEST_COMMAND, DELAYED_COMMAND];
+const ALL_COMMANDS = [TEST_COMMAND, DELAYED_COMMAND, START_SERVER, STOP_SERVER];
 
 async function installCommands(appId, commands) {
     const endpoint = `applications/${appId}/commands`;
