@@ -55,7 +55,7 @@ app.post('/interactions', async (req, res) => {
             });
         } else if (name === 'start' || name === 'stop') {
             // Schedule on event loop to not block response if azure takes a while
-            setTimeout(async () => await runContainerAction(name, channel), 10);
+            setTimeout(async () => await runContainerAction(name, channel), 150);
 
             // Reply so that the user knows that we are working on it
             return res.send({
@@ -80,12 +80,16 @@ async function runContainerAction(name, channel) {
     const containerGroup = "minecraft-server";
     const action = name;
     
+    console.log(`running container action ${action}`);
+
     let success = true;
     try {
         // Authenticate
         const token = await requestAccessToken();
+        console.log("retrieved token!");
         // Start/stop container via API call
         await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
+        console.log("container action completed successfully");
     } catch (e) {
         console.error(e);
         success = false;
