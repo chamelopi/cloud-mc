@@ -37,6 +37,7 @@ app.post('/interactions', async (req, res) => {
         console.log(`${name} command sent to channel ${channel_id} by ${req.body.member ? req.body.member.user.username : '(no member)'}`);
 
         if (name === 'test') {
+            // Dummy command
             return res.send({
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
@@ -44,11 +45,8 @@ app.post('/interactions', async (req, res) => {
                 },
             });
         } else if (name === 'delayed') {
-            // TODO: In the future we will call Azure here to start/stop the server and send a delayed message
-            // after that action completed.
+            // Dummy async command
             delayedMessage(channel_id, 3000, 'you will read this 3 seconds later');
-
-            // TODO: Is there a way we don't have to send a message here?
             return res.send({
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
@@ -63,7 +61,7 @@ app.post('/interactions', async (req, res) => {
             return res.send({
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
-                    content: `${name}ing the server, please wait...`,
+                    content: `${name}ing the server, this takes some time, please be patient...`,
                 },
             });
         }
@@ -74,7 +72,6 @@ app.post('/interactions', async (req, res) => {
 
 /**
  * Command handler for `/start` and `/stop`. Starts/stops the Azure Container Instance running the minecraft server
- * 
  */
 async function runContainerAction(name, channel) {
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
@@ -82,6 +79,8 @@ async function runContainerAction(name, channel) {
     const containerGroup = "minecraft-server";
     const action = name;
     
+    // TODO: prevent running multiple actions in parallel
+
     console.log(`running container action ${action}`);
 
     let success = true;
@@ -90,6 +89,7 @@ async function runContainerAction(name, channel) {
         const token = await requestAccessToken();
         console.log("retrieved token!");
         // Start/stop container via API call
+        // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully somehow?
         await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
         console.log("container action completed successfully");
     } catch (e) {
@@ -98,6 +98,7 @@ async function runContainerAction(name, channel) {
     }
     
     // Determine reply message
+    // TODO: Send message after some delay, since the server takes some time to start up
     const msg = success ? `successfully ${action}ed the server!` : "Error, please check logs!";
 
     // Send response message to the same channel

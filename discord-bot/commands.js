@@ -13,12 +13,12 @@ const DELAYED_COMMAND = {
 }
 const START_SERVER = {
     name: 'start',
-    description: 'starts the server',
+    description: 'starts the minecraft server',
     type: 1,
 }
 const STOP_SERVER = {
     name: 'stop',
-    description: 'stops the server',
+    description: 'stops the minecraft server',
     type: 1,
 }
 
