@@ -40,3 +40,24 @@ az container create -g MinecraftServer --name minecraft-server --image marctv/mi
 ```
 
 With `az container create`, you can also use the `-f` flag to pass a docker-compose file? (I did not test this, but it seems likely)
+
+### Creating a OAuth app & allowing it to start containers
+
+**Create an app**:
+-> go to azure active directory
+-> app registration
+-> new app
+-> store the client secret, client id & tenant id for later use (.env file)
+
+(app might need the "user_impersonation" permission under "API permissions")
+
+**Assign "Contributor" role to the app**:
+-> select subscriptions
+-> Access Control (IAM)
+-> Add, Add role assignment
+-> In the Role tab, select "Contributor" to allow the application to execute actions like reboot, start and stop instances
+-> On the Members tab. Select Assign access to, then select User, group, or service principal
+-> search for the app by name
+-> review & assign
+
+([Source](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)).
