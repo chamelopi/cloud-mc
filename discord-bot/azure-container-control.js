@@ -36,6 +36,25 @@ export async function execContainerAction(subscriptionId, resourceGroup, contain
     console.log(await resp.text());
 }
 
+export async function getContainerState(subscriptionId, resourceGroup, containerGroup, token) {
+    const url = `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.ContainerInstance/containerGroups/${containerGroup}?api-version=2023-05-01`
+
+    const resp = await fetch(url, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+
+    var respJson = JSON.parse(await resp.text());
+
+    const currentState = respJson.properties.containers.filter(e => e.name = "minecraft-server")[0].properties.instanceView.currentState;
+    return {
+        "state": currentState.state,
+        "stateSince" : currentState.finishTime
+    }
+}
+
 (async () => {
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
@@ -43,5 +62,6 @@ export async function execContainerAction(subscriptionId, resourceGroup, contain
     const action = "start";
     
     const token = await requestAccessToken();
-    await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);    
+    await getContainerState(subscriptionId, resourceGroup, containerGroup, token);
+    // await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
 })();

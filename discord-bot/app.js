@@ -64,6 +64,15 @@ app.post('/interactions', async (req, res) => {
                     content: `${name}ing the server, this takes some time, please be patient...`,
                 },
             });
+        } else if (name === "status") {
+            setTimeout(async () => await runContainerAction(name, channel_id), 15);
+            // Reply so that the user knows that we are working on it
+            return res.send({
+                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                    content: `${name}ing the server, this takes some time, please be patient...`,
+                },
+            });
         }
 
 
@@ -100,6 +109,44 @@ async function runContainerAction(name, channel) {
     // Determine reply message
     // TODO: Send message after some delay, since the server takes some time to start up
     const msg = success ? `successfully ${action}ed the server!` : "Error, please check logs!";
+
+    // Send response message to the same channel
+    try {
+        await sendDiscordRequest(`channels/${channel}/messages`, { method: 'POST', body: { content: msg } });
+    } catch(e) {
+        console.error('Failed to send delayed message', e);
+    }
+}
+
+/**
+ * Command handler for `/status`. Returns the status of the Azure Container Instance running the minecraft server
+ */
+async function runContainerActionStatus(channel) {
+    const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
+    const resourceGroup = "MinecraftServer";
+    const containerGroup = "minecraft-server";
+    const action = "status";
+    
+    // TODO: prevent running multiple actions in parallel
+
+    console.log(`running container action ${action}`);
+
+    var resultJson = ""
+    let success = true;
+    try {
+        // Authenticate
+        const token = await requestAccessToken();
+        console.log("retrieved token!");
+        result = await getContainerState(subscriptionId, resourceGroup, containerGroup, action, token);
+        console.log("container action completed successfully");
+    } catch (e) {
+        console.error(e);
+        success = false;
+    }
+    
+    // Determine reply message
+    // TODO: Send message after some delay, since the server takes some time to start up
+    const msg = success ? JSON.stringify(resultJson) : "Error, please check logs!";
 
     // Send response message to the same channel
     try {
