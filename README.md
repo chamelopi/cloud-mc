@@ -2,6 +2,16 @@
 
 Azure Cloud based Minecraft setup :)
 
+## Next TODOs
+
+- [ ] Check & wait for container startup (via status call) until the server is up
+  - [ ] Bonus points if you check for actual minecraft server connectivity
+- [ ] Stop the minecraft server gracefully before sending a SIGKILL via Azure API
+- [ ] Run a cronjob every 15 minutes, checking for players on the server, shutting it down if nobody is playing
+- [ ] Find out if we need some kind of backup on top of the file share
+  - file share seems to retain data forever, retention period is just for soft-deleted data
+  - what does "locally-redundant" mean?
+
 ## Plans
 - **Azure Container Instance** running linux minecraft server
   - 15 GB limit for container size
