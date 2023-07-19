@@ -3,7 +3,7 @@ import express from 'express';
 
 import { verifyDiscordRequest, sendDiscordRequest } from './discord.js';
 import { InteractionResponseType, InteractionType } from 'discord-interactions';
-import { requestAccessToken, execContainerAction } from './azure-container-control.js';
+import { requestAccessToken, execContainerAction, getContainerState } from './azure-container-control.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
