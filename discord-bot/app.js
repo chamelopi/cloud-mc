@@ -93,7 +93,7 @@ async function runContainerAction(name, channel) {
         // Start/stop container via API call
         // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully somehow?
         if (action === "status") {
-            result = await getContainerState(subscriptionId, resourceGroup, containerGroup, action, token);
+            result = await getContainerState(subscriptionId, resourceGroup, containerGroup, token);
         } else {
             await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
         }
@@ -126,7 +126,7 @@ function getReplyMessage(action, success, result) {
                 return `successfully started the server!`;
         }
     } else {
-        "Error, please check logs!";
+        return "Error, please check logs!";
     }
 }
 
