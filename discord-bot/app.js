@@ -98,7 +98,7 @@ async function runContainerAction(name, channel) {
 
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
-                let status = getStatus(containerHostName, port);
+                let status = await getStatus(containerHostName, port);
                 result = status;
             }
         } else {
@@ -126,7 +126,6 @@ function getReplyMessage(action, success, result) {
     if (success) {
         switch(action) {
             case "status":
-                console.log(`status result: ${result}`);
                 return (typeof(result) == 'object') ? JSON.stringify(result) : result;
             case "start":
                 return `successfully started the server!`;
