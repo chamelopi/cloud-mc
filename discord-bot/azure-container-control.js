@@ -60,6 +60,6 @@ export async function getContainerState(subscriptionId, resourceGroup, container
     const currentState = respJson.properties.containers.filter(e => e.name = "minecraft-server")[0].properties.instanceView.currentState;
     return {
         "state": currentState.state,
-        "stateSince" : currentState.finishTime
+        "stateSince" : currentState.finishTime,
     }
 }
