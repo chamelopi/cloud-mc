@@ -94,15 +94,14 @@ async function runContainerAction(name, channel) {
         // Start/stop container via API call
         // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully somehow?
         if (action === "status") {
-            result = JSON.stringify(await getContainerState(subscriptionId, resourceGroup, containerGroup, token));
+            result = await getContainerState(subscriptionId, resourceGroup, containerGroup, token);
 
-            console.log(result.state, (result.state === 'Running'));
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
-                console.log('Checking player count...');
                 let status = getStatus(containerHostName, port);
-                console.log('Response: ' + status);
                 result = status;
+            } else {
+                result = JSON.stringify(result);
             }
         } else {
             await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
