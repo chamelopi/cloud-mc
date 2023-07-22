@@ -4,6 +4,8 @@ import { PromiseSocket } from 'promise-socket';
 //const hostname = "cloud-mc.westeurope.azurecontainer.io";
 
 export async function getStatus(hostname, port) {
+    console.log(`requesting status of ${hostname} at port ${port}`);
+
     // connect
     const socket = new PromiseSocket(new net.Socket());
     await socket.connect({port: port, host: hostname});
