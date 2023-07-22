@@ -18,7 +18,8 @@ export async function getStatus(hostname, port) {
     let status = await readStatusResponse(socket);
     // close connection
     await socket.end();
-    // parse status response
+    
+    console.log(`Server status: ${status}`);
     return status;
 }
 
