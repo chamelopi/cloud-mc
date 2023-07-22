@@ -92,7 +92,7 @@ async function runContainerAction(name, channel) {
         const token = await requestAccessToken();
         console.log("retrieved token!");
         // Start/stop container via API call
-        // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully somehow?
+        // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully?
         if (action === "status") {
             result = await getContainerState(subscriptionId, resourceGroup, containerGroup, token);
 
@@ -117,7 +117,8 @@ async function runContainerAction(name, channel) {
     }
     
     // Determine reply message
-    // TODO: Send message after some delay, since the server takes some time to start up
+    // TODO: If action is 'start', delay the reply & poll the server every 5 seconds
+    //       so that we only notify the players once they can connect.
     const msg = getReplyMessage(action, success, result);
 
     // Send response message to the same channel

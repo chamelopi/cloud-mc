@@ -9,6 +9,7 @@ import { PromiseSocket } from 'promise-socket';
 export async function getStatus(hostname, port) {
     // connect
     const socket = new PromiseSocket(new net.Socket());
+    socket.setTimeout(10000);
     await socket.connect({port: port, host: hostname});
 
     // write handshake
