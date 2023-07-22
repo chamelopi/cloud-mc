@@ -77,7 +77,7 @@ async function runContainerAction(name, channel) {
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
     const containerGroup = "minecraft-server";
-    const containerHostName = "cloud-mc.westeurope.azurecontainer.io:25565";
+    const containerHostName = "cloud-mc.westeurope.azurecontainer.io";
     const port = 25565;
     const action = name;
     
