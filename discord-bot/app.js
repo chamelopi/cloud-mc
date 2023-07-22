@@ -98,9 +98,14 @@ async function runContainerAction(name, channel) {
 
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
-                let status = await getStatus(containerHostName, port);
-                result = status;
+                try {
+                    result = await getStatus(containerHostName, port);
+                } catch (e) {
+                    console.error('could not retrieve status from the minecraft server', e);
+                    result = { state: 'Minecraft Unavailable' };
+                }
             }
+            result = formatStatus(result);
         } else {
             await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
         }
@@ -120,6 +125,21 @@ async function runContainerAction(name, channel) {
 }
 
 /**
+ * Pretty-prints the server status
+ */
+function formatStatus(status) {
+    if (status.state == 'Terminated') {
+        return `🔴 Not Running since ${status.stateSince}`;
+    } else if (status.version) {
+        return `🟢 Running ${status.version.name} with ${status.players.online}/${status.players.max} players`;
+    } else if (status.state == 'Waiting') {
+        return `🟡 Waiting`;
+    } else {
+        return `🟡 ${status.state}`;
+    }
+}
+
+/**
  * Builds the message the bot sends after completing an action, based on the action and its result.
  */
 function getReplyMessage(action, success, result) {
@@ -129,8 +149,8 @@ function getReplyMessage(action, success, result) {
                 return (typeof(result) == 'object') ? JSON.stringify(result) : result;
             case "start":
                 return `successfully started the server!`;
-            case "stopped":
-                return `successfully started the server!`;
+            case "stop":
+                return `successfully stopped the server!`;
         }
     } else {
         return "Error, please check logs!";

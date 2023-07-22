@@ -41,6 +41,8 @@ export async function execContainerAction(subscriptionId, resourceGroup, contain
 
 /**
  * Returns the status of the Azure Container Instance running the minecraft server
+ * 
+ * @returns object containing state + timestamp
  */
 export async function getContainerState(subscriptionId, resourceGroup, containerGroup, token) {
     const url = `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.ContainerInstance/containerGroups/${containerGroup}/?api-version=2023-05-01`

@@ -3,8 +3,11 @@ import { PromiseSocket } from 'promise-socket';
 
 //const hostname = "cloud-mc.westeurope.azurecontainer.io";
 
+/**
+ * Returns a JSON string containing info about the minecraft server running at hostname:port
+ */
 export async function getStatus(hostname, port) {
-        // connect
+    // connect
     const socket = new PromiseSocket(new net.Socket());
     await socket.connect({port: port, host: hostname});
 
