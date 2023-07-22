@@ -99,7 +99,7 @@ async function runContainerAction(name, channel) {
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
                 try {
-                    result = await getStatus(containerHostName, port);
+                    result = JSON.parse(await getStatus(containerHostName, port));
                 } catch (e) {
                     console.error('could not retrieve status from the minecraft server', e);
                     result = { state: 'Minecraft Unavailable' };
@@ -125,10 +125,9 @@ async function runContainerAction(name, channel) {
 }
 
 /**
- * Pretty-prints the server status
+ * Pretty-prints the server status object
  */
 function formatStatus(status) {
-    console.log('formatting state', status);
     if (status.state == 'Terminated') {
         return `🔴 Not Running since ${status.stateSince}`;
     } else if (!!status.version) {
