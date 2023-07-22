@@ -25,8 +25,6 @@ async function sendMessage(channel, msg) {
 app.post('/interactions', async (req, res) => {
     const { type, _id, data, channel_id } = req.body;
 
-    console.log(`received request: ${JSON.stringify(req.body)}`);
-
     // Handle verification requests
     if (type === InteractionType.PING) {
         return res.send({ type: InteractionResponseType.PONG });
