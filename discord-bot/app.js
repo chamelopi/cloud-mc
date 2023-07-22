@@ -100,8 +100,6 @@ async function runContainerAction(name, channel) {
             if (result.state === 'Running') { 
                 let status = getStatus(containerHostName, port);
                 result = status;
-            } else {
-                result = JSON.stringify(result);
             }
         } else {
             await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
@@ -128,7 +126,7 @@ function getReplyMessage(action, success, result) {
     if (success) {
         switch(action) {
             case "status":
-                return result;
+                return (typeof(result) == 'object') ? JSON.stringify(result) : result;
             case "start":
                 return `successfully started the server!`;
             case "stopped":
