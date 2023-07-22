@@ -1,7 +1,7 @@
 import net from 'node:net';
 import { PromiseSocket } from 'promise-socket';
 
-const hostname = "cloud-mc.westeurope.azurecontainer.io";
+//const hostname = "cloud-mc.westeurope.azurecontainer.io";
 
 export async function getStatus(hostname, port) {
     // connect
