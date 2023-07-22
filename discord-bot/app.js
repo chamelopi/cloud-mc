@@ -96,6 +96,7 @@ async function runContainerAction(name, channel) {
         if (action === "status") {
             result = JSON.stringify(await getContainerState(subscriptionId, resourceGroup, containerGroup, token));
 
+            console.log(result.state, (result.state === 'Running'));
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
                 console.log('Checking player count...');
