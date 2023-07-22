@@ -4,6 +4,7 @@ import express from 'express';
 import { verifyDiscordRequest, sendDiscordRequest } from './discord.js';
 import { InteractionResponseType, InteractionType } from 'discord-interactions';
 import { requestAccessToken, execContainerAction, getContainerState } from './azure-container-control.js';
+import { getStatus } from './minecraft.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -76,6 +77,8 @@ async function runContainerAction(name, channel) {
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
     const containerGroup = "minecraft-server";
+    const containerHostName = "cloud-mc.westeurope.azurecontainer.io:25565";
+    const port = 25565;
     const action = name;
     
     // TODO: prevent running multiple actions in parallel
@@ -92,6 +95,13 @@ async function runContainerAction(name, channel) {
         // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully somehow?
         if (action === "status") {
             result = await getContainerState(subscriptionId, resourceGroup, containerGroup, token);
+
+            // If server is running, request its player count & display that
+            const statusJson = JSON.stringify(result);
+            if (statusJson.state === 'Running') { 
+                let status = getStatus(containerHostName, port);
+                result = status;
+            }
         } else {
             await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
         }
