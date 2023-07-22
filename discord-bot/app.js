@@ -126,6 +126,7 @@ function getReplyMessage(action, success, result) {
     if (success) {
         switch(action) {
             case "status":
+                console.log(`status result: ${result}`);
                 return (typeof(result) == 'object') ? JSON.stringify(result) : result;
             case "start":
                 return `successfully started the server!`;

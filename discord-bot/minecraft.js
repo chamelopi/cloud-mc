@@ -19,7 +19,7 @@ export async function getStatus(hostname, port) {
     // close connection
     await socket.end();
     
-    console.log(`Server status: ${status}`);
+    console.log(`Server status: ${status} | ${typeof(status)}`);
     return status;
 }
 
