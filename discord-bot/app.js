@@ -99,8 +99,8 @@ async function runContainerAction(name, channel) {
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
                 try {
-                    console.log('asking server for player count');
                     result = await getStatus(containerHostName, port);
+                    console.log('server status is: ', result);
                 } catch (e) {
                     console.error('could not retrieve status from the minecraft server', e);
                     result = { state: 'Minecraft Unavailable' };
