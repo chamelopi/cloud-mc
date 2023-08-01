@@ -114,6 +114,8 @@ With `az container create`, you can also use the `-f` flag to pass a docker-comp
 
 ### Creating an App Service for the bot
 
+To run the bot on azure.
+
 create "App Service" via portal
 - Pricing: B1 basic
 - Public networking yes
@@ -135,8 +137,38 @@ You have to set your azure deployment user with
 az webapp deployment user set --user-name <username> --password <password>
 ```
 
+Things to note
+- You can use any user/password combination apparently
+- The user should *not* be your azure email, since the username cannot contain '@'
+
+
 then you can request the git remote url for deployment via
 
 ```
 az webapp deployment source config-local-git --name cloud-mc-bot --resource-group MinecraftServer
+```
+
+You can then add the URL the command returns as a new git remote:
+
+```
+git remote add azure <URL>
+```
+
+and push to it like any other remote, which will trigger the deployment:
+
+```
+git push azure main
+```
+
+Then, you will need to set the credentials from .env file for the container via
+
+```
+az webapp config appsettings set -g MinecraftServer -n cloud-mc-bot --settings KEY=VALUE
+```
+
+or via the UI. If the credentials are missing, discord will complain if you try to set the bot URL:
+
+```
+Validation errors:
+    interactions_endpoint_url: The specified interactions endpoint url could not be verified.
 ```

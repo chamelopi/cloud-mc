@@ -23,7 +23,7 @@ async function sendMessage(channel, msg) {
     }
 }
 
-app.get('/health', (req, res) => {
+app.get('/health', (_, res) => {
     return res.send("OK");
 })
 
@@ -77,13 +77,12 @@ app.post('/interactions', async (req, res) => {
  * Command handler for container control. Starts/stops the Azure Container Instance running the minecraft server,
  * or returns its status.
  */
-async function runContainerAction(name, channel) {
+async function runContainerAction(action, channel) {
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
     const containerGroup = "minecraft-server";
     const containerHostName = "cloud-mc.westeurope.azurecontainer.io";
-    const port = 25565;
-    const action = name;
+    const containerPort = 25565;
     
     // TODO: prevent running multiple actions in parallel
 
@@ -103,7 +102,7 @@ async function runContainerAction(name, channel) {
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
                 try {
-                    result = JSON.parse(await getStatus(containerHostName, port));
+                    result = JSON.parse(await getStatus(containerHostName, containerPort));
                 } catch (e) {
                     console.error('could not retrieve status from the minecraft server', e);
                     result = { state: 'Minecraft Unavailable' };
