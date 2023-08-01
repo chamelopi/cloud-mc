@@ -3,7 +3,8 @@ import express from 'express';
 
 import { verifyDiscordRequest, sendDiscordRequest } from './discord.js';
 import { InteractionResponseType, InteractionType } from 'discord-interactions';
-import { requestAccessToken, execContainerAction } from './azure-container-control.js';
+import { requestAccessToken, execContainerAction, getContainerState } from './azure-container-control.js';
+import { getStatus } from './minecraft.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,19 +12,19 @@ app.use(express.json({ verify: verifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 // Send `msg` to `channel` after `delayMs` milliseconds
 function delayedMessage(channel, delayMs, msg) {
-    setTimeout(async () => {
-        try {
-            await sendDiscordRequest(`channels/${channel}/messages`, { method: 'POST', body: { content: msg } });
-        } catch(e) {
-            console.error('Failed to send delayed message', e);
-        }
-    }, delayMs);
+    setTimeout(async () => await sendMessage(channel, msg), delayMs);
 };
+
+async function sendMessage(channel, msg) {
+    try {
+        await sendDiscordRequest(`channels/${channel}/messages`, { method: 'POST', body: { content: msg } });
+    } catch(e) {
+        console.error('Failed to send delayed message', e);
+    }
+}
 
 app.post('/interactions', async (req, res) => {
     const { type, _id, data, channel_id } = req.body;
-
-    console.log(`received request: ${JSON.stringify(req.body)}`);
 
     // Handle verification requests
     if (type === InteractionType.PING) {
@@ -53,7 +54,7 @@ app.post('/interactions', async (req, res) => {
                     content: "wait a moment...",
                 },
             });
-        } else if (name === 'start' || name === 'stop') {
+        } else if (name === 'start' || name === 'stop' || name === 'status') {
             // Schedule on event loop to not block response if azure takes a while
             setTimeout(async () => await runContainerAction(name, channel_id), 15);
 
@@ -65,18 +66,19 @@ app.post('/interactions', async (req, res) => {
                 },
             });
         }
-
-
     }
 });
 
 /**
- * Command handler for `/start` and `/stop`. Starts/stops the Azure Container Instance running the minecraft server
+ * Command handler for container control. Starts/stops the Azure Container Instance running the minecraft server,
+ * or returns its status.
  */
 async function runContainerAction(name, channel) {
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
     const containerGroup = "minecraft-server";
+    const containerHostName = "cloud-mc.westeurope.azurecontainer.io";
+    const port = 25565;
     const action = name;
     
     // TODO: prevent running multiple actions in parallel
@@ -84,13 +86,30 @@ async function runContainerAction(name, channel) {
     console.log(`running container action ${action}`);
 
     let success = true;
+    let result = ""
     try {
         // Authenticate
         const token = await requestAccessToken();
         console.log("retrieved token!");
         // Start/stop container via API call
-        // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully somehow?
-        await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
+        // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully?
+        if (action === "status") {
+            result = await getContainerState(subscriptionId, resourceGroup, containerGroup, token);
+
+            // If server is running, request its player count & display that
+            if (result.state === 'Running') { 
+                try {
+                    result = JSON.parse(await getStatus(containerHostName, port));
+                } catch (e) {
+                    console.error('could not retrieve status from the minecraft server', e);
+                    result = { state: 'Minecraft Unavailable' };
+                }
+            }
+            result = formatStatus(result);
+        } else {
+            await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
+        }
+        
         console.log("container action completed successfully");
     } catch (e) {
         console.error(e);
@@ -98,16 +117,47 @@ async function runContainerAction(name, channel) {
     }
     
     // Determine reply message
-    // TODO: Send message after some delay, since the server takes some time to start up
-    const msg = success ? `successfully ${action}ed the server!` : "Error, please check logs!";
+    // TODO: If action is 'start', delay the reply & poll the server every 5 seconds
+    //       so that we only notify the players once they can connect.
+    const msg = getReplyMessage(action, success, result);
 
     // Send response message to the same channel
-    try {
-        await sendDiscordRequest(`channels/${channel}/messages`, { method: 'POST', body: { content: msg } });
-    } catch(e) {
-        console.error('Failed to send delayed message', e);
+    await sendMessage(channel, msg);
+}
+
+/**
+ * Pretty-prints the server status object
+ */
+function formatStatus(status) {
+    if (status.state == 'Terminated') {
+        return `🔴 Not Running since ${status.stateSince}`;
+    } else if (!!status.version) {
+        return `🟢 Running ${status.version.name} with ${status.players.online}/${status.players.max} players`;
+    } else if (status.state == 'Waiting') {
+        return `🟡 Waiting`;
+    } else {
+        return `🟡 ${status.state}`;
     }
 }
+
+/**
+ * Builds the message the bot sends after completing an action, based on the action and its result.
+ */
+function getReplyMessage(action, success, result) {
+    if (success) {
+        switch(action) {
+            case "status":
+                return (typeof(result) == 'object') ? JSON.stringify(result) : result;
+            case "start":
+                return `successfully started the server!`;
+            case "stop":
+                return `successfully stopped the server!`;
+        }
+    } else {
+        return "Error, please check logs!";
+    }
+}
+
 
 app.listen(PORT, () => {
     console.log('started on port', PORT);

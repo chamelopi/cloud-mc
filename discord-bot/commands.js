@@ -21,8 +21,13 @@ const STOP_SERVER = {
     description: 'stops the minecraft server',
     type: 1,
 }
+const STATUS_SERVER = {
+    name: 'status',
+    description: 'status of the minecraft server',
+    type: 1,
+}
 
-const ALL_COMMANDS = [TEST_COMMAND, DELAYED_COMMAND, START_SERVER, STOP_SERVER];
+const ALL_COMMANDS = [TEST_COMMAND, DELAYED_COMMAND, START_SERVER, STOP_SERVER, STATUS_SERVER];
 
 async function installCommands(appId, commands) {
     const endpoint = `applications/${appId}/commands`;

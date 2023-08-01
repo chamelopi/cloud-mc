@@ -19,6 +19,9 @@ export async function requestAccessToken() {
     return token.token;
 }
 
+/**
+ * Starts or stops the Azure Container Instance
+ */
 export async function execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token) {
     if (["start", "stop", "restart"].indexOf(action) < 0) {
         throw Error(`${action} is not a valid container action!`);
@@ -36,12 +39,27 @@ export async function execContainerAction(subscriptionId, resourceGroup, contain
     console.log(await resp.text());
 }
 
-(async () => {
-    const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
-    const resourceGroup = "MinecraftServer";
-    const containerGroup = "minecraft-server";
-    const action = "start";
-    
-    const token = await requestAccessToken();
-    await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);    
-})();
+/**
+ * Returns the status of the Azure Container Instance running the minecraft server
+ * 
+ * @returns object containing state + timestamp
+ */
+export async function getContainerState(subscriptionId, resourceGroup, containerGroup, token) {
+    const url = `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.ContainerInstance/containerGroups/${containerGroup}/?api-version=2023-05-01`
+
+    const resp = await fetch(url, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+
+    var respJson = JSON.parse(await resp.text());
+    //console.log(`received response from Azure: ${JSON.stringify(respJson)}`);
+
+    const currentState = respJson.properties.containers.filter(e => e.name = "minecraft-server")[0].properties.instanceView.currentState;
+    return {
+        "state": currentState.state,
+        "stateSince" : currentState.finishTime,
+    }
+}
