@@ -2,6 +2,46 @@
 
 Azure Cloud based Minecraft setup :)
 
+## Discord bot
+
+#### Instructions
+
+To run the bot, do the following
+
+```bash
+# Install dependencies from npm
+npm install
+# Register bot commands via discord API
+npm run register
+# Run the server which reacts to discord interactions
+npm start
+```
+
+This requires a `.env` file present with the following contents:
+
+```
+APP_ID=...
+DISCORD_TOKEN=...
+PUBLIC_KEY=...
+# Azure OAuth credentials, see below
+AZURE_CLIENT_ID=...
+AZURE_TENANT_ID=...
+AZURE_CLIENT_SECRET=...
+```
+
+Optionally, you can also specify a `PORT` - the default is 3000.
+
+#### Resources used 
+- Where you manage your bots: https://discord.com/developers/applications
+- Discord bot guide: https://discord.com/developers/docs/getting-started
+- Example project: https://github.com/discord/discord-example-app
+
+#### Alternative library
+- We could alternatively use [**discord.js**](https://www.npmjs.com/package/discord.js)
+- discord.js seems to be more powerful alternative to the "official" discord-interactions package, i.e. it can also send messages by itself, etc.
+- note sure if we need it
+- guide for that: https://discordjs.guide/creating-your-bot/slash-commands.html
+
 ## Next TODOs
 
 - [ ] Check & wait for container startup (via status call) until the server is up
@@ -71,3 +111,12 @@ With `az container create`, you can also use the `-f` flag to pass a docker-comp
 -> review & assign
 
 ([Source](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)).
+
+### Creating an App Service for the bot
+
+create "App Service" via portal
+- Pricing: B1 basic
+- Public networking yes
+- Deployment: Code
+- CI: no
+- Runtime Stack: Node 18

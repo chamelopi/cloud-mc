@@ -23,6 +23,10 @@ async function sendMessage(channel, msg) {
     }
 }
 
+app.get('/health', (req, res) => {
+    return res.send("OK");
+})
+
 app.post('/interactions', async (req, res) => {
     const { type, _id, data, channel_id } = req.body;
 
