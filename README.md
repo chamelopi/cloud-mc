@@ -120,3 +120,23 @@ create "App Service" via portal
 - Deployment: Code
 - CI: no
 - Runtime Stack: Node 18
+
+#### Deployment via `git push`
+
+Change deployment branch to main instead of master
+
+```
+az webapp config appsettings set --name cloud-mc-bot --resource-group MinecraftServer --settings DEPLOYMENT_BRANCH='main'
+```
+
+You have to set your azure deployment user with
+
+```
+az webapp deployment user set --user-name <username> --password <password>
+```
+
+then you can request the git remote url for deployment via
+
+```
+az webapp deployment source config-local-git --name cloud-mc-bot --resource-group MinecraftServer
+```
