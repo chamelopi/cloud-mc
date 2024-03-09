@@ -140,7 +140,7 @@ function formatStatus(status) {
         if (process.env.MC_SERVER_URL) {
             text += `\nYou can access the server at ${process.env.MC_SERVER_URL}`;
         }
-        return ;
+        return text;
     } else if (status.state == 'Waiting') {
         return `🟡 Waiting`;
     } else {
