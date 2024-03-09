@@ -82,7 +82,7 @@ async function runContainerAction(action, channel) {
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
     const containerGroup = "minecraft-server";
-    const containerHostName = "cloud-mc.westeurope.azurecontainer.io";
+    const containerHostName = process.env.MC_SERVER_URL;
     const containerPort = 25565;
     
     // TODO: prevent running multiple actions in parallel
@@ -120,13 +120,40 @@ async function runContainerAction(action, channel) {
         success = false;
     }
     
-    // Determine reply message
-    // TODO: If action is 'start', delay the reply & poll the server every 5 seconds
-    //       so that we only notify the players once they can connect.
-    const msg = getReplyMessage(action, success, result);
+    
+    if (action !== "start") {
+        // Determine reply message
+        const msg = getReplyMessage(action, success, result);
+        // Send response message to the same channel
+        await sendMessage(channel, msg);
+    } else {
+        // If action is 'start', delay the reply & poll the server every 5 seconds
+        // so that we only notify the players once they can connect.
+        setTimeout(() => pollServerUntilStarted(containerHostName, containerPort, 0, channel), 5000);
+    }
+}
 
-    // Send response message to the same channel
-    await sendMessage(channel, msg);
+/**
+ * Because the server takes quite a while to start, poll in 5 second intervals if it can be reached.
+ * Stop after retry attempts.
+ */
+async function pollServerUntilStarted(containerHostName, containerPort, attempt, channel) {
+    if (attempt > 3) {
+        console.error("Could not receive positive status from server after " + attempt + " attempts. Giving up!");
+        await sendMessage(channel, "Server takes longer than expected to start, please wait a bit, then try /status!");
+        return;
+    }
+
+    try {
+        result = JSON.parse(await getStatus(containerHostName, containerPort));
+        result = formatStatus(result);
+        const msg = getReplyMessage("start", true, result);
+        // Send response message to the same channel
+        await sendMessage(channel, msg);
+    } catch (e) {
+        console.log("Attempt " + attempt + " did not reach the server, trying again in 5 seconds...");
+        setTimeout(() => pollServerUntilStarted(containerHostName, containerPort, ++attempt, channel));
+    }
 }
 
 /**
