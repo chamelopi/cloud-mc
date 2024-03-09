@@ -127,9 +127,9 @@ async function runContainerAction(action, channel) {
         // Send response message to the same channel
         await sendMessage(channel, msg);
     } else {
-        // If action is 'start', delay the reply & poll the server every 5 seconds
+        // If action is 'start', delay the reply & poll the server every minute
         // so that we only notify the players once they can connect.
-        setTimeout(() => pollServerUntilStarted(containerHostName, containerPort, 0, channel), 30000);
+        setTimeout(() => pollServerUntilStarted(containerHostName, containerPort, 0, channel), 60000);
     }
 }
 
@@ -138,7 +138,7 @@ async function runContainerAction(action, channel) {
  * Stop after retry attempts.
  */
 async function pollServerUntilStarted(containerHostName, containerPort, attempt, channel) {
-    if (attempt > 10) {
+    if (attempt > 5) {
         console.error("Could not receive positive status from server after " + attempt + " attempts. Giving up!");
         await sendMessage(channel, "Server takes longer than expected to start, please wait a bit, then try /status!");
         return;
