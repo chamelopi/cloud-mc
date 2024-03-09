@@ -78,6 +78,7 @@ app.post('/interactions', async (req, res) => {
  * or returns its status.
  */
 async function runContainerAction(action, channel) {
+    // TODO: Get from env
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
     const containerGroup = "minecraft-server";
@@ -105,7 +106,7 @@ async function runContainerAction(action, channel) {
                     result = JSON.parse(await getStatus(containerHostName, containerPort));
                 } catch (e) {
                     console.error('could not retrieve status from the minecraft server', e);
-                    result = { state: 'Minecraft Unavailable' };
+                    result = { state: 'Minecraft starting up...' };
                 }
             }
             result = formatStatus(result);
@@ -135,7 +136,11 @@ function formatStatus(status) {
     if (status.state == 'Terminated') {
         return `🔴 Not Running since ${status.stateSince}`;
     } else if (!!status.version) {
-        return `🟢 Running ${status.version.name} with ${status.players.online}/${status.players.max} players`;
+        let text = `🟢 Running ${status.version.name} with ${status.players.online}/${status.players.max} players`;
+        if (process.env.MC_SERVER_URL) {
+            text += `\nYou can access the server at ${process.env.MC_SERVER_URL}`;
+        }
+        return ;
     } else if (status.state == 'Waiting') {
         return `🟡 Waiting`;
     } else {
