@@ -1,10 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
 
-import { verifyDiscordRequest, sendDiscordRequest } from './discord.js';
 import { InteractionResponseType, InteractionType } from 'discord-interactions';
-import { requestAccessToken, execContainerAction, getContainerState } from './azure-container-control.js';
+import { execContainerAction, getContainerState, requestAccessToken } from './azure-container-control.js';
+import { sendDiscordRequest, verifyDiscordRequest } from './discord.js';
 import { getStatus } from './minecraft.js';
+import { SERVER_CHOICES } from './serverlist.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +19,7 @@ function delayedMessage(channel, delayMs, msg) {
 async function sendMessage(channel, msg) {
     try {
         await sendDiscordRequest(`channels/${channel}/messages`, { method: 'POST', body: { content: msg } });
-    } catch(e) {
+    } catch (e) {
         console.error('Failed to send delayed message', e);
     }
 }
@@ -39,7 +40,7 @@ app.post('/interactions', async (req, res) => {
 
     // Handle test command
     if (type === InteractionType.APPLICATION_COMMAND) {
-        const { name } = data;
+        const { name, options } = data;
 
         console.log('full command request body: ', req.body);
         console.log(`${name} command sent to channel ${channel_id} by ${req.body.member ? req.body.member.user.username : '(no member)'}`);
@@ -62,8 +63,10 @@ app.post('/interactions', async (req, res) => {
                 },
             });
         } else if (name === 'start' || name === 'stop' || name === 'status') {
+            const serverContainerGroup = getServerOption(options);
+            const serverAlias = getServerAlias(options);
             // Schedule on event loop to not block response if azure takes a while
-            setTimeout(async () => await runContainerAction(name, channel_id), 15);
+            setTimeout(async () => await runContainerAction(name, channel_id, serverAlias, serverContainerGroup), 15);
 
             // Reply so that the user knows that we are working on it
             return res.send({
@@ -92,21 +95,52 @@ app.post('/interactions', async (req, res) => {
 });
 
 /**
+ * Finds the server alias (i.e. what the user specified as command option) from options array
+ */
+function getServerAlias(options) {
+    for (let option of options) {
+        if (option.name === 'server') {
+            // Find the original choice - that is the server alias
+            for (let [k, v] of Object.entries(SERVER_CHOICES)) {
+                if (v === option.value) {
+                    return k;
+                }
+            }
+        }
+    }
+    return 'default';
+}
+
+/**
+ * Retrieves server resource group (given via aliases) from the command options
+ */
+function getServerOption(options) {
+    for (let option of options) {
+        if (option.name === 'server') {
+            return option.value;
+        }
+    }
+    // Default server container group
+    return 'minecraft-server';
+}
+
+/**
  * Command handler for container control. Starts/stops the Azure Container Instance running the minecraft server,
  * or returns its status.
  */
-async function runContainerAction(action, channel) {
+async function runContainerAction(action, channel, serverAlias, serverContainerGroup) {
     // TODO: Get from env
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
-    // TODO: use the choice from the command option
-    const containerGroup = "minecraft-server";
-    const containerHostName = process.env.MC_SERVER_URL;
+    // Default minecraft port
     const containerPort = 25565;
-    
+    // These two are distinguished by the command option
+    const containerGroup = serverContainerGroup;
+    const containerHostName = process.env['MC_SERVER_URL_' + serverAlias.toUpperCase()];
+
     // TODO: prevent running multiple actions in parallel
 
-    console.log(`running container action ${action}`);
+    console.log(`running container action ${action} for ${containerGroup}`);
 
     let success = true;
     let result = ""
@@ -120,7 +154,7 @@ async function runContainerAction(action, channel) {
             result = await getContainerState(subscriptionId, resourceGroup, containerGroup, azToken);
 
             // If server is running, request its player count & display that
-            if (result.state === 'Running') { 
+            if (result.state === 'Running') {
                 try {
                     result = JSON.parse(await getStatus(containerHostName, containerPort));
                 } catch (e) {
@@ -132,14 +166,14 @@ async function runContainerAction(action, channel) {
         } else {
             await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, azToken);
         }
-        
+
         console.log("container action completed successfully");
     } catch (e) {
         console.error(e);
         success = false;
     }
-    
-    
+
+
     if (action !== "start") {
         // Determine reply message
         const msg = getReplyMessage(action, success, result);
@@ -202,9 +236,9 @@ function formatStatus(status) {
  */
 function getReplyMessage(action, success, result) {
     if (success) {
-        switch(action) {
+        switch (action) {
             case "status":
-                return (typeof(result) == 'object') ? JSON.stringify(result) : result;
+                return (typeof (result) == 'object') ? JSON.stringify(result) : result;
             case "start":
                 return `successfully started the server!`;
             case "stop":
