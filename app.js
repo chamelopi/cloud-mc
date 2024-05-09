@@ -97,6 +97,10 @@ app.post('/interactions', async (req, res) => {
  * Finds the server alias (i.e. what the user specified as command option) from options array
  */
 function getServerAlias(options) {
+    if (!options) {
+        return 'default';
+    }
+
     for (let option of options) {
         if (option.name === 'server') {
             // Find the original choice - that is the server alias
@@ -114,6 +118,10 @@ function getServerAlias(options) {
  * Retrieves server resource group (given via aliases) from the command options
  */
 function getServerOption(options) {
+    if (!options) {
+        return 'minecraf-server';
+    }
+
     for (let option of options) {
         if (option.name === 'server') {
             return option.value;
