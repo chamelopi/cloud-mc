@@ -45,8 +45,8 @@ Optionally, you can also specify a `PORT` - the default is 3000.
 
 ## Next TODOs
 
-- [ ] Check & wait for container startup (via status call) until the server is up
-  - [ ] Bonus points if you check for actual minecraft server connectivity
+- [ ] Use `phyremaster/papermc`, which seems to be more up-to-date
+- [ ] Clean up readme
 - [ ] Stop the minecraft server gracefully before sending a SIGKILL via Azure API
 - [ ] Run a cronjob every 15 minutes, checking for players on the server, shutting it down if nobody is playing
 - [ ] Find out if we need some kind of backup on top of the file share
