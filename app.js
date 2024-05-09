@@ -72,6 +72,12 @@ app.post('/interactions', async (req, res) => {
             });
         } else {
             console.log(`unknown command: ${name}`);
+            return res.send({
+                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                    content: `meh, what is ${name}?`,
+                },
+            });
         }
     }
 });

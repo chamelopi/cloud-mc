@@ -21,6 +21,7 @@ const START_SERVER = {
             type: 3, // STRING
             name: "server",
             description: "the server to start, using 'default' if none specified",
+            required: false,
             choices: SERVER_CHOICES,
         },
     ],
@@ -34,6 +35,7 @@ const STOP_SERVER = {
             type: 3, // STRING
             name: "server",
             description: "the server to stop, using 'default' if none specified",
+            required: false,
             choices: SERVER_CHOICES,
         },
     ],
@@ -47,6 +49,7 @@ const STATUS_SERVER = {
             type: 3, // STRING
             name: "server",
             description: "the server to query status of, using 'default' if none specified",
+            required: false,
             choices: SERVER_CHOICES,
         },
     ],
