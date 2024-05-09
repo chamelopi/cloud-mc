@@ -70,6 +70,8 @@ app.post('/interactions', async (req, res) => {
                     content: `${name}ing the server, this takes some time, please be patient...`,
                 },
             });
+        } else {
+            console.log(`unknown command: ${name}`);
         }
     }
 });
@@ -82,6 +84,7 @@ async function runContainerAction(action, channel) {
     // TODO: Get from env
     const subscriptionId = "318db169-bd64-46b2-ac38-5f12eca299dc";
     const resourceGroup = "MinecraftServer";
+    // TODO: use the choice from the command option
     const containerGroup = "minecraft-server";
     const containerHostName = process.env.MC_SERVER_URL;
     const containerPort = 25565;
@@ -94,12 +97,12 @@ async function runContainerAction(action, channel) {
     let result = ""
     try {
         // Authenticate
-        const token = await requestAccessToken();
+        const azToken = await requestAccessToken();
         console.log("retrieved token!");
         // Start/stop container via API call
         // TODO: Stop is a SIGKILL according to The Internet (tm) - can we stop the server gracefully?
         if (action === "status") {
-            result = await getContainerState(subscriptionId, resourceGroup, containerGroup, token);
+            result = await getContainerState(subscriptionId, resourceGroup, containerGroup, azToken);
 
             // If server is running, request its player count & display that
             if (result.state === 'Running') { 
@@ -112,7 +115,7 @@ async function runContainerAction(action, channel) {
             }
             result = formatStatus(result);
         } else {
-            await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, token);
+            await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, azToken);
         }
         
         console.log("container action completed successfully");

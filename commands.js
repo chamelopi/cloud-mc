@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { sendDiscordRequest } from './discord.js';
+import { SERVER_CHOICES } from './serverlist.js';
 
 const TEST_COMMAND = {
     name: 'test',
@@ -15,16 +16,40 @@ const START_SERVER = {
     name: 'start',
     description: 'starts the minecraft server',
     type: 1,
+    options: [
+        {
+            type: 3, // STRING
+            name: "server",
+            description: "the server to start, using 'default' if none specified",
+            choices: SERVER_CHOICES,
+        },
+    ],
 }
 const STOP_SERVER = {
     name: 'stop',
     description: 'stops the minecraft server',
     type: 1,
+    options: [
+        {
+            type: 3, // STRING
+            name: "server",
+            description: "the server to stop, using 'default' if none specified",
+            choices: SERVER_CHOICES,
+        },
+    ],
 }
 const STATUS_SERVER = {
     name: 'status',
     description: 'status of the minecraft server',
     type: 1,
+    options: [
+        {
+            type: 3, // STRING
+            name: "server",
+            description: "the server to query status of, using 'default' if none specified",
+            choices: SERVER_CHOICES,
+        },
+    ],
 }
 
 const ALL_COMMANDS = [TEST_COMMAND, DELAYED_COMMAND, START_SERVER, STOP_SERVER, STATUS_SERVER];
