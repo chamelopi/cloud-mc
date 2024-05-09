@@ -28,6 +28,8 @@ app.get('/health', (_, res) => {
 })
 
 app.post('/interactions', async (req, res) => {
+    console.log('interaction received: ', req.body.type);
+
     const { type, _id, data, channel_id } = req.body;
 
     // Handle verification requests
@@ -79,6 +81,13 @@ app.post('/interactions', async (req, res) => {
                 },
             });
         }
+    } else {
+        return res.send({
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+                content: `helo`,
+            },
+        });
     }
 });
 
