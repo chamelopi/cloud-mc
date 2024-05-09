@@ -119,7 +119,7 @@ function getServerAlias(options) {
  */
 function getServerOption(options) {
     if (!options) {
-        return 'minecraf-server';
+        return 'minecraft-server';
     }
 
     for (let option of options) {
