@@ -42,7 +42,6 @@ app.post('/interactions', async (req, res) => {
     if (type === InteractionType.APPLICATION_COMMAND) {
         const { name, options } = data;
 
-        console.log('full command request body: ', req.body);
         console.log(`${name} command sent to channel ${channel_id} by ${req.body.member ? req.body.member.user.username : '(no member)'}`);
 
         if (name === 'test') {
