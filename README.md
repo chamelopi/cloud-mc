@@ -84,11 +84,21 @@ Select the storage account, then follow these steps (with the appropriate type o
 
 ![](img/howto-set-quota.png)
 
+### Creating a file share
+
+```
+az storage share-rm create -g $RESOURCE_GROUP --storage-account $STORAGE_ACCOUNT --name $NAME --quota 20 --enabled-protocols SMB --output table
+```
+
+(creates the file share under an existing storage account)
+
 ### Creating a container with a file share
 
 ```
 az container create -g MinecraftServer --name minecraft-server --image marctv/minecraft-papermc-server:latest --azure-file-volume-share-name minecraft --azure-file-volume-account-name minecraft20230716 --azure-file-volume-mount-path "/data" --restart-policy Never --cpu 4 --memory 4 --dns-name-label cloud-mc --ports 25565 --os-type Linux -e "EULA=TRUE" -e "OPS=chamelopi" --location "west europe"
 ```
+
+This command will ask for the storage account access key. You can find that under 'Security + networking' -> 'Access keys'.
 
 With `az container create`, you can also use the `-f` flag to pass a docker-compose file? (I did not test this, but it seems likely)
 
