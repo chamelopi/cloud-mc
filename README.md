@@ -95,7 +95,7 @@ az storage share-rm create -g $RESOURCE_GROUP --storage-account $STORAGE_ACCOUNT
 ### Creating a container with a file share
 
 ```
-az container create -g MinecraftServer --name minecraft-server --image marctv/minecraft-papermc-server:latest --azure-file-volume-share-name minecraft --azure-file-volume-account-name minecraft20230716 --azure-file-volume-mount-path "/data" --restart-policy Never --cpu 4 --memory 4 --dns-name-label cloud-mc --ports 25565 --os-type Linux -e "EULA=TRUE" -e "OPS=chamelopi" --location "west europe"
+az container create -g MinecraftServer --name minecraft-server --image phyremaster/papermc:latest --azure-file-volume-share-name minecraft --azure-file-volume-account-name minecraft20230716 --azure-file-volume-mount-path "/papermc" --restart-policy Never --cpu 4 --memory 4 --dns-name-label cloud-mc --ports 25565 --os-type Linux -e "EULA=TRUE" "OPS=chamelopi" --location "west europe"
 ```
 
 This command will ask for the storage account access key. You can find that under 'Security + networking' -> 'Access keys'.
