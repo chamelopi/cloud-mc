@@ -165,7 +165,7 @@ async function runContainerAction(action, channel, serverAlias, serverContainerG
                 try {
                     result = JSON.parse(await getStatus(containerHostName, containerPort));
                 } catch (e) {
-                    console.error('could not retrieve status from the minecraft server', e);
+                    console.error(`could not retrieve status from the minecraft server at ${containerHostName}`, e);
                     result = { state: 'Minecraft starting up...' };
                 }
             }
