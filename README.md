@@ -183,3 +183,9 @@ or via the UI. If the credentials are missing, discord will complain if you try 
 Validation errors:
     interactions_endpoint_url: The specified interactions endpoint url could not be verified.
 ```
+
+By default, a webapp like this is turned off after an idle time of 20 minutes. To change that, use:
+
+```
+az webapp config set -g MinecraftServer -n cloud-mc-bot --always-on true
+```
