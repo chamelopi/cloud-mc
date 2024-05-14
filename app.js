@@ -230,7 +230,7 @@ function formatStatus(status) {
     } else if (!!status.version) {
         let text = `🟢 Running ${status.version.name} with ${status.players.online}/${status.players.max} players`;
         if (process.env.MC_SERVER_URL) {
-            text += `\nYou can access the server at ${process.env.MC_SERVER_URL}`;
+            text += `\nYou can access the server at ${status.fqdn}`;
         }
         return text;
     } else if (status.state == 'Waiting') {
