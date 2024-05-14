@@ -208,7 +208,7 @@ async function pollServerUntilStarted(containerHostName, containerPort, attempt,
 
     try {
         result = JSON.parse(await getStatus(containerHostName, containerPort));
-        result = formatStatus(result);
+        result = formatStatus(result, containerHostName);
         const msg = getReplyMessage("start", true, result);
         // Send response message to the same channel
         await sendMessage(channel, msg);
@@ -224,13 +224,13 @@ async function pollServerUntilStarted(containerHostName, containerPort, attempt,
 /**
  * Pretty-prints the server status object
  */
-function formatStatus(status) {
+function formatStatus(status, containerHostName) {
     if (status.state == 'Terminated') {
         return `🔴 Not Running since ${status.stateSince}`;
     } else if (!!status.version) {
         let text = `🟢 Running ${status.version.name} with ${status.players.online}/${status.players.max} players`;
         if (process.env.MC_SERVER_URL) {
-            text += `\nYou can access the server at ${status.fqdn}`;
+            text += `\nYou can access the server at ${containerHostName}`;
         }
         return text;
     } else if (status.state == 'Waiting') {
