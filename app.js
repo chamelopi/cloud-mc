@@ -147,7 +147,7 @@ async function runContainerAction(action, channel, serverAlias, serverContainerG
 
     // TODO: prevent running multiple actions in parallel
 
-    console.log(`running container action ${action} for ${containerGroup}`);
+    console.log(`running container action ${action} for ${containerGroup} (${serverAlias})`);
 
     let success = true;
     let result = ""
