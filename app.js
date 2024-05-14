@@ -104,9 +104,10 @@ function getServerAlias(options) {
     for (let option of options) {
         if (option.name === 'server') {
             // Find the original choice - that is the server alias
-            for (let [k, v] of Object.entries(SERVER_CHOICES)) {
-                if (v === option.value) {
-                    return k;
+            // Note that SERVER_CHOICES is a LIST of OBJECTS!
+            for (let elem of SERVER_CHOICES) {
+                if (elem.value === option.value) {
+                    return elem.name;
                 }
             }
         }
@@ -163,7 +164,7 @@ async function runContainerAction(action, channel, serverAlias, serverContainerG
             // If server is running, request its player count & display that
             if (result.state === 'Running') {
                 try {
-                    result = JSON.parse(await getStatus(containerHostName, containerPort));
+                    result = JSON.parse(await getStatus(result.fqdn || containerHostName, containerPort));
                 } catch (e) {
                     console.error(`could not retrieve status from the minecraft server at ${containerHostName}`, e);
                     result = { state: 'Minecraft starting up...' };
@@ -189,6 +190,7 @@ async function runContainerAction(action, channel, serverAlias, serverContainerG
     } else {
         // If action is 'start', delay the reply & poll the server every minute
         // so that we only notify the players once they can connect.
+        // TODO: We could refactor this to use the fqdn from the status response
         setTimeout(() => pollServerUntilStarted(containerHostName, containerPort, 0, channel), 60000);
     }
 }
