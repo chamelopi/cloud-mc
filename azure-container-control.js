@@ -57,7 +57,7 @@ export async function getContainerState(subscriptionId, resourceGroup, container
     var respJson = JSON.parse(await resp.text());
     //console.log(`received response from Azure: ${JSON.stringify(respJson)}`);
 
-    const currentState = respJson.properties.containers.filter(e => e.name = "minecraft-server")[0].properties.instanceView.currentState;
+    const currentState = respJson.properties.containers.filter(e => e.name = containerGroup)[0].properties.instanceView.currentState;
     return {
         "state": currentState.state,
         "stateSince" : currentState.finishTime,
