@@ -170,7 +170,7 @@ async function runContainerAction(action, channel, serverAlias, serverContainerG
                     result = { state: 'Minecraft starting up...' };
                 }
             }
-            result = formatStatus(result);
+            result = formatStatus(result, result.fqdn || containerHostName);
         } else {
             await execContainerAction(subscriptionId, resourceGroup, containerGroup, action, azToken);
         }
@@ -229,7 +229,7 @@ function formatStatus(status, containerHostName) {
         return `🔴 Not Running since ${status.stateSince}`;
     } else if (!!status.version) {
         let text = `🟢 Running ${status.version.name} with ${status.players.online}/${status.players.max} players`;
-        if (process.env.MC_SERVER_URL) {
+        if (containerHostName) {
             text += `\nYou can access the server at ${containerHostName}`;
         }
         return text;

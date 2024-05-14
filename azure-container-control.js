@@ -64,7 +64,7 @@ export async function getContainerState(subscriptionId, resourceGroup, container
                        : { state: "Terminated", stateSince: Date.now() };
     return {
         "state": currentState.state,
-        "stateSince": currentState.finishTime,
+        "stateSince": (currentState.finishTime || Date.now()),
         "fqdn": properties?.ipAddress?.fqdn,
     }
 }
