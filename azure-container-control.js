@@ -61,10 +61,10 @@ export async function getContainerState(subscriptionId, resourceGroup, container
     // 'properties' always exists, but instanceView and currentState might not
     const currentState = (properties && properties.instanceView)
                        ? properties.instanceView.currentState
-                       : { state: "Terminated", stateSince: Date.now() };
+                       : { state: "Terminated", stateSince: "a long time" };
     return {
         "state": currentState.state,
-        "stateSince": (currentState.finishTime || Date.now()),
+        "stateSince": (currentState.finishTime || "a long time"),
         "fqdn": properties?.ipAddress?.fqdn,
     }
 }
