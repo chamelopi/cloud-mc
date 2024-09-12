@@ -189,3 +189,39 @@ By default, a webapp like this is turned off after an idle time of 20 minutes. T
 ```
 az webapp config set -g MinecraftServer -n cloud-mc-bot --always-on true
 ```
+
+# Container registries
+
+You might get the following error:
+
+```
+(RegistryErrorResponse) An error response is received from the docker registry 'index.docker.io'. Please retry later.
+Code: RegistryErrorResponse
+Message: An error response is received from the docker registry 'index.docker.io'. Please retry later.
+```
+
+You need to create a container registry, because docker does rate limiting for the azure IPs....
+
+See:
+- https://dev.to/amilkardev/denied-requested-access-to-the-resource-is-denied-4ie1
+- https://github.com/Azure/azure-cli/issues/29300
+
+## Push the images to the registry
+
+(This needs to be run on a computer that has docker installed locally - or cloud shell I guess)
+
+```bash
+# Login to the registry
+az acr login --name serverimages
+# This stores credentials locally in plaintext!
+docker login serverimages.azurecr.io
+docker image tag phyremaster/papermc serverimages.azurecr.io/papermc
+docker push serverimages.azurecr.io/papermc
+```
+
+The command above is adjusted to use that registry.
+
+You might need to re-do the above when you want a newer version.
+
+During deployment & during login to the registry, you need the credentials of the container registry (settings -> access keys) and the storage account
+(storage account -> security + networking -> access keys)
