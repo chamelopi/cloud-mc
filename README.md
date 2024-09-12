@@ -104,19 +104,26 @@ With `az container create`, you can also use the `-f` flag to pass a docker-comp
 
 ### Creating a OAuth app & allowing it to start containers
 
-**Create an app**:
--> go to azure active directory
--> app registration
--> new app
--> store the client secret, client id & tenant id for later use (.env file)
+The currently used secret expires on September 12th, 2026.
 
-(app might need the "user_impersonation" permission under "API permissions")
+**Create an app registration**:
+-> go to ~~azure active directory~~ now called microsoft entra ID
+-> manage -> app registration
+-> new app
+-> manage -> certificates & secrets -> + new client secret
+-> store the client secret for later use (.env file)
+   (you can only save this at this point!)
+-> You can see the client id and tenant id on the "Overview" of the app registration
+
+(app might need the 
+  "Azure Rights Management Services" and 
+  "Azure Service Management" -> "user_impersonation" permission under "API permissions")
 
 **Assign "Contributor" role to the app**:
--> select subscriptions
+-> Select subscription
 -> Access Control (IAM)
--> Add, Add role assignment
--> In the Role tab, select "Contributor" to allow the application to execute actions like reboot, start and stop instances
+-> Add -> Add role assignment
+-> In the Role tab, under Privileges administrator roles, select "Contributor" to allow the application to execute actions like reboot, start and stop instances
 -> On the Members tab. Select Assign access to, then select User, group, or service principal
 -> search for the app by name
 -> review & assign
