@@ -232,3 +232,4 @@ You might need to re-do the above when you want a newer version.
 
 During deployment & during login to the registry, you need the credentials of the container registry (settings -> access keys) and the storage account
 (storage account -> security + networking -> access keys)
+
