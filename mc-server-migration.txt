@@ -1,0 +1,9 @@
+- [x] Create resource group 'MinecraftServer'
+- [x] Create storage account
+- [x] Create container registry
+- [x] Set up server images via docker
+- [x] Create file shares for 'default', 'moritz' and 'phee'
+- [x] Create containers for 'default', 'moritz' and 'phee'
+- [ ] Take down the bot on old azure and deploy it to new azure
+- [ ] Copy over world data
+
