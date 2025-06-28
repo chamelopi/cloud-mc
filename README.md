@@ -225,7 +225,8 @@ az acr login --name serverimagesv2
 # but does not seem necessary (?)
 # docker login serverimagesv2.azurecr.io
 docker image tag ghcr.io/thijmengthn/papermc serverimagesv2.azurecr.io/papermc
-docker push serverimagesv2.azurecr.io/papermc
+# docker image tag itzg/minecraft-server serverimagesv2.azurecr.io/minecraft-server
+
 ```
 
 The command above is adjusted to use that registry.
