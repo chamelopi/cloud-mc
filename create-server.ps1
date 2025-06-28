@@ -1,10 +1,13 @@
 $RESOURCE_GROUP="MinecraftServer"
-$STORAGE_ACCOUNT="minecraft20230716"
+$STORAGE_ACCOUNT="minecraft20250628"
 $STORAGE_NAME="minecraft-server-phee"
 $CONTAINER_NAME="minecraft-server-phee"
+# For vanilla
+#$IMAGE="serverimages.azurecr.io/papermc"
+# For modded
 $IMAGE="serverimages.azurecr.io/minecraft-server"
 $STORAGE_PATH="/data"
-$HOSTNAME="cloud-mc-phee"
+$HOSTNAME="cloud-mc-phee-v2"
 
 
 az storage share-rm create -g $RESOURCE_GROUP --storage-account $STORAGE_ACCOUNT --name $STORAGE_NAME --quota 20 --enabled-protocols SMB --output table
