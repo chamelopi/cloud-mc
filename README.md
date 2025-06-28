@@ -32,7 +32,7 @@ MC_SERVER_URL=...
 
 Optionally, you can also specify a `PORT` - the default is 3000.
 
-#### Resources used 
+#### Resources used
 - Where you manage your bots: https://discord.com/developers/applications
 - Discord bot guide: https://discord.com/developers/docs/getting-started
 - Example project: https://github.com/discord/discord-example-app
@@ -45,7 +45,6 @@ Optionally, you can also specify a `PORT` - the default is 3000.
 
 ## Next TODOs
 
-- [ ] Use `phyremaster/papermc`, which seems to be more up-to-date
 - [ ] Clean up readme
 - [ ] Stop the minecraft server gracefully before sending a SIGKILL via Azure API
 - [ ] Run a cronjob every 15 minutes, checking for players on the server, shutting it down if nobody is playing
@@ -115,8 +114,8 @@ The currently used secret expires on September 12th, 2026.
    (you can only save this at this point!)
 -> You can see the client id and tenant id on the "Overview" of the app registration
 
-(app might need the 
-  "Azure Rights Management Services" and 
+(app might need the
+  "Azure Rights Management Services" and
   "Azure Service Management" -> "user_impersonation" permission under "API permissions")
 
 **Assign "Contributor" role to the app**:
@@ -217,12 +216,15 @@ See:
 
 (This needs to be run on a computer that has docker installed locally - or cloud shell I guess)
 
+*Note*: the `phyremaster/papermc` image seems to no longer be maintained - using `ghcr.io/thijmengthn/papermc` now.
+
 ```bash
 # Login to the registry
 az acr login --name serverimages
 # This stores credentials locally in plaintext!
-docker login serverimages.azurecr.io
-docker image tag phyremaster/papermc serverimages.azurecr.io/papermc
+# but does not seem necessary (?)
+# docker login serverimages.azurecr.io
+docker image tag ghcr.io/thijmengthn/papermc serverimages.azurecr.io/papermc
 docker push serverimages.azurecr.io/papermc
 ```
 
