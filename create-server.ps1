@@ -3,9 +3,9 @@ $STORAGE_ACCOUNT="minecraft20250628"
 $STORAGE_NAME="minecraft-server-phee"
 $CONTAINER_NAME="minecraft-server-phee"
 # For vanilla
-#$IMAGE="serverimages.azurecr.io/papermc"
+#$IMAGE="serverimagesv2.azurecr.io/papermc"
 # For modded
-$IMAGE="serverimages.azurecr.io/minecraft-server"
+$IMAGE="serverimagesv2.azurecr.io/minecraft-server"
 $STORAGE_PATH="/data"
 $HOSTNAME="cloud-mc-phee-v2"
 

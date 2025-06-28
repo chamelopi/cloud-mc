@@ -94,7 +94,7 @@ az storage share-rm create -g $RESOURCE_GROUP --storage-account $STORAGE_ACCOUNT
 ### Creating a container with a file share
 
 ```
-az container create -g MinecraftServer --name minecraft-server --image serverimages.azurecr.io/papermc --azure-file-volume-share-name minecraft --azure-file-volume-account-name minecraft20230716 --azure-file-volume-mount-path "/papermc" --restart-policy Never --cpu 4 --memory 4 --dns-name-label cloud-mc --ports 25565 --os-type Linux -e "EULA=TRUE" "OPS=chamelopi" --location "west europe"
+az container create -g MinecraftServer --name minecraft-server --image serverimagesv2.azurecr.io/papermc --azure-file-volume-share-name minecraft --azure-file-volume-account-name minecraft20230716 --azure-file-volume-mount-path "/papermc" --restart-policy Never --cpu 4 --memory 4 --dns-name-label cloud-mc --ports 25565 --os-type Linux -e "EULA=TRUE" "OPS=chamelopi" --location "west europe"
 ```
 
 This command will ask for the storage account access key. You can find that under 'Security + networking' -> 'Access keys'.
@@ -220,12 +220,12 @@ See:
 
 ```bash
 # Login to the registry
-az acr login --name serverimages
+az acr login --name serverimagesv2
 # This stores credentials locally in plaintext!
 # but does not seem necessary (?)
-# docker login serverimages.azurecr.io
-docker image tag ghcr.io/thijmengthn/papermc serverimages.azurecr.io/papermc
-docker push serverimages.azurecr.io/papermc
+# docker login serverimagesv2.azurecr.io
+docker image tag ghcr.io/thijmengthn/papermc serverimagesv2.azurecr.io/papermc
+docker push serverimagesv2.azurecr.io/papermc
 ```
 
 The command above is adjusted to use that registry.
